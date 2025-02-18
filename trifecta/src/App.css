@@ -1,0 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;700&family=Inter:wght@400;700&family=Lexend+Deca&display=swap');
+
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
+	font-family: 'Archivo', 'San-serif';
+}
+.gradient-outline {
+	border: 2px solid transparent; /* Set the initial border */
+	border-image: linear-gradient(135deg, #690d65, #0b61b0) 1; /* Apply gradient as border image */
+}
+.gradient-color {
+	background: linear-gradient(135deg, #690d65, #0b61b0);
+}
+.border-gradient {
+	border-width: 2px;
+	border-style: solid;
+	border-image: linear-gradient(135deg, #690d65, #0b61b0) 1;
+}

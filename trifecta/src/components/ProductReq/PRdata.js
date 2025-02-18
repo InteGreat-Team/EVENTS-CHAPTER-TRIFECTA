@@ -1,0 +1,88 @@
+const PRdata = [
+  {
+    PRNumber: '202403041056',
+    Supplier: 'Unilab',
+    ContactPerson: 'Travis Simpson',
+    OrderCreated: '03-04-2024 10:56',
+    Status: 'Pending',
+    Street: '138 Street',
+    City: 'Los Angeles',
+    State: 'California',
+    Country: 'US',
+    ZipCode: '8102',
+    // Item: 'Paracetamol',
+    // ItemDesc: 'box',
+    // Qty: '5',
+    // InvoiceNo: '',
+    Items: [
+      {
+        Item: 'Paracetamol',
+        ItemDesc: 'box',
+        Qty: '5',
+      },
+      {
+        Item: 'Ibuprofen',
+        ItemDesc: 'bottle',
+        Qty: '3',
+      },
+      {
+        Item: 'Ibuprofen',
+        ItemDesc: 'bottle',
+        Qty: '1',
+      },
+      {
+        Item: 'Ibuprofen',
+        ItemDesc: 'bottle',
+        Qty: '4',
+      },
+      {
+        Item: 'Ibuprofen',
+        ItemDesc: 'bottle',
+        Qty: '2',
+      },
+    ],
+  },
+  {
+    PRNumber: '202403041075',
+    Supplier: 'Luxe Organics',
+    ContactPerson: 'Kinemberly Chu',
+    OrderCreated: '03-04-2024 10:58',
+    Status: 'Approved',
+    Street: 'Apple Street',
+    InvoiceNo: '',
+  },
+  {
+    PRNumber: '202403041072',
+    Supplier: 'P&G',
+    ContactPerson: 'Kinemberly Chu',
+    OrderCreated: '03-04-2024 10:58',
+    Status: 'Rejected',
+    InvoiceNo: '',
+  },
+  {
+    PRNumber: '202403041065',
+    Supplier: 'P&G',
+    ContactPerson: 'Kinemberly Chu',
+    OrderCreated: '03-04-2024 10:58',
+    Status: 'Pending',
+    InvoiceNo: '',
+  },
+  {
+    PRNumber: '202403041060',
+    Supplier: 'P&G',
+    ContactPerson: 'Kinemberly Chu',
+    OrderCreated: '03-04-2024 10:58',
+    Status: 'Rejected',
+    InvoiceNo: '',
+  },
+  {
+    PRNumber: '202403041059',
+    Supplier: 'P&G',
+    ContactPerson: 'Kinemberly Chu',
+    OrderCreated: '03-04-2024 10:58',
+    Status: 'Approved',
+    InvoiceNo: '',
+  },
+]
+
+export default PRdata
