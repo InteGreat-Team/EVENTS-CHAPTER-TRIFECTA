@@ -36,7 +36,7 @@ const AddModal = () => {
 		try {
 			console.log(formData)
 			await axios.post(
-				'http://localhost:3002/api/addSupplier',
+				'http://localhost:3001/api/addSupplier',
 				formData
 			)
 			window.location.reload()
