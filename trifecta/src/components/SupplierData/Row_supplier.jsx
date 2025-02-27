@@ -1,171 +1,70 @@
-import React, { useState, useEffect } from 'react'
-import { CiEdit } from 'react-icons/ci'
-import { PiDotsThreeDuotone } from 'react-icons/pi'
-import { SiGoogleforms } from 'react-icons/si'
-import DataTable from 'react-data-table-component'
-import { SupplierInfo as initialSupplierInfo } from '../SupplierData/SupplierInfo'
-import EditModal from '../Modal/EditSupplier'
-import SupplierSumm from '../Modal/SupplierSumm'
-import PurchaseReqModal from '../Modal/PurchaseRequest' // Renamed the import
-import axios from 'axios'
+import React, { useEffect, useState } from "react";
 
 const Row_supplier = () => {
-	const [editModalOpen, setEditModalOpen] = useState(false)
-	const [selectedSupplier, setSelectedSupplier] =
-		useState(null)
-	const [SupplierInfo, setSupplierInfo] = useState(
-		initialSupplierInfo
-	)
-	const [SupplierSummary, setSupplierSummary] =
-		useState(false)
-	const [PurchaseReqOpen, setPurchaseReqOpen] =
-		useState(false) // Renamed the state variable
-	const [data, setData] = useState([])
+  const [suppliers, setSuppliers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-	const [selectedRow, setSelectedRow] = useState(null)
+  useEffect(() => {
+    const fetchSuppliers = async () => {
+      try {
+        const response = await fetch("http://localhost:3001/api/suppliers");
+        if (!response.ok) {
+          throw new Error("Failed to fetch suppliers.");
+        }
+        const data = await response.json();
+        setSuppliers(data);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const response = await axios.get(
-					'http://localhost:3002/api/data'
-				)
-				// Map the response data to extract only required fields
-				const mappedData = response.data.map(
-					(supplier) => ({
-						supplierid: supplier.supplierid,
-						suppliername: supplier.suppliername,
-						contactphone: supplier.contactphone,
-						suppliercontact: supplier.suppliercontact,
-						companyemail: supplier.companyemail,
-						street: supplier.street,
-						city: supplier.city,
-						state: supplier.state,
-						zipcode: supplier.zipcode,
-						country: supplier.country,
-					})
-				)
-				setData(mappedData)
-			} catch (error) {
-				console.error('Error fetching data:', error)
-			}
-		}
+    fetchSuppliers();
+  }, []);
 
-		fetchData()
-	}, [])
+  return (
+    <div className="overflow-x-auto p-6">
+      <h2 className="text-2xl font-semibold text-violet-700 mb-4" style={{ fontFamily: "Georgia, serif" }}>
+        Suppliers List
+      </h2>
 
-	const openEditModal = (supplier) => {
-		setSelectedSupplier(supplier)
-		setEditModalOpen(true)
-	}
-	const openSupplierSummary = (row) => {
-		setSelectedRow(row)
-		setSupplierSummary(true)
-	}
-	const openPurchaseReq = (row) => {
-		setSelectedRow(row)
-		setPurchaseReqOpen(true)
-	}
+      {loading && <p className="text-gray-500">Loading suppliers...</p>}
+      {error && <p className="text-red-500">{error}</p>}
 
-	const closeEditModal = () => {
-		setSelectedSupplier(null)
-		setEditModalOpen(false)
-	}
+      {!loading && !error && suppliers.length === 0 && (
+        <p className="text-gray-500">No suppliers found.</p>
+      )}
 
-	const handleSaveChanges = (formData) => {
-		const updatedSupplierInfo = SupplierInfo.map(
-			(supplier) =>
-				supplier.id === formData.id ? formData : supplier
-		)
-		setSupplierInfo(updatedSupplierInfo)
-		console.log('Changes saved:', formData)
-		closeEditModal() // Close modal after saving changes
-	}
-	const customStyles = {
-		headRow: {
-			style: {
-				fontWeight: 'bold',
-				fontSize: '14px',
-				backgroundColor: '#f2f2f2',
-			},
-		},
-	}
+      {!loading && !error && suppliers.length > 0 && (
+        <table className="w-full border-collapse rounded-lg shadow-lg">
+          <thead className="bg-violet-200 text-gray-800">
+            <tr>
+              <th className="border p-3 text-lg" style={{ fontFamily: "Georgia, serif" }}>Supplier Name</th>
+              <th className="border p-3 text-lg" style={{ fontFamily: "Georgia, serif" }}>Contact Person</th>
+              <th className="border p-3 text-lg" style={{ fontFamily: "Georgia, serif" }}>Phone</th>
+              <th className="border p-3 text-lg" style={{ fontFamily: "Georgia, serif" }}>Email</th>
+              <th className="border p-3 text-lg" style={{ fontFamily: "Georgia, serif" }}>Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            {suppliers.map((supplier) => (
+              <tr key={supplier.supplier_id} className="hover:bg-pink-100 transition">
+                <td className="border p-3" style={{ fontFamily: "Georgia, serif" }}>{supplier.supplier_name}</td>
+                <td className="border p-3" style={{ fontFamily: "Georgia, serif" }}>{supplier.contact_person || "N/A"}</td>
+                <td className="border p-3" style={{ fontFamily: "Georgia, serif" }}>{supplier.contact_phone || "N/A"}</td>
+                <td className="border p-3" style={{ fontFamily: "Georgia, serif" }}>{supplier.company_email || "N/A"}</td>
+                <td className="border p-3" style={{ fontFamily: "Georgia, serif" }}>
+                  {`${supplier.street}, ${supplier.city}, ${supplier.state}, ${supplier.zipcode}, ${supplier.country}`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+    </div>
+  );
+};
 
-	const columns = [
-		{
-			name: 'Supplier Name',
-			selector: (row) => row.suppliername,
-			sortable: true,
-		},
-		{
-			name: 'Contact Number',
-			selector: (row) => row.contactphone,
-			sortable: true,
-		},
-		{
-			name: 'Contact Person',
-			selector: (row) => row.suppliercontact,
-			sortable: true,
-			// hide: 'md',
-		},
-		{
-			name: 'Actions',
-			cell: (row) => (
-				<div className="flex gap-x-2">
-					<CiEdit
-						onClick={() => openEditModal(row)}
-						className="bg-brand-blue text-white  text-[18px] rounded-sm shadow-sm w-auto h-6 lg:h-6 p-[0.2rem] cursor-pointer"
-					/>
-					<PiDotsThreeDuotone
-						onClick={() => openSupplierSummary(row)}
-						className="bg-dark-gray text-white text-[18px] rounded-sm shadow-sm w-auto h-6 lg:h-6 p-[0.2rem] cursor-pointer"
-					/>
-					<SiGoogleforms
-						className="bg-purple-light text-white  text-[18px] rounded-sm shadow-sm w-auto h-6 lg:h-6 p-[0.2rem] cursor-pointer  "
-						onClick={() => openPurchaseReq(row)}
-					/>
-				</div>
-			),
-		},
-	]
-	// console.log('SupplierInfo:', SupplierInfo) // Check SupplierInfo array
-
-	return (
-		<div className="flex flex-col mx-4 mt-10  md:mx-6 md:ml-[6rem] lg:mx-28 rounded-lg shadow-md">
-			<DataTable
-				columns={columns}
-				data={data}
-				dense
-				pagination
-				paginationRowsPerPageOptions={[5, 10]}
-				paginationPosition="bottom"
-				className=" rounded-lg shadow-sm"
-				customStyles={customStyles}
-			/>
-			{editModalOpen && (
-				<EditModal
-					isOpen={editModalOpen}
-					closeModal={closeEditModal}
-					initialData={selectedSupplier}
-					onSave={handleSaveChanges}
-				/>
-			)}
-			{SupplierSummary && selectedRow && (
-				<SupplierSumm
-					isOpen={SupplierSummary}
-					closeModal={() => setSupplierSummary(false)}
-					rowData={selectedRow}
-				/>
-			)}
-			{PurchaseReqOpen && selectedRow && (
-				<PurchaseReqModal // Changed the component name here
-					isOpen={PurchaseReqOpen}
-					closeModal={() => setPurchaseReqOpen(false)}
-					rowData={selectedRow}
-				/>
-			)}
-		</div>
-	)
-}
-
-export default Row_supplier
+export default Row_supplier;

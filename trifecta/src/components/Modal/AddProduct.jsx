@@ -39,7 +39,7 @@ const Modal = ({ showAdd, toggleModalAdd }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:3001/api/addItem", formData);
+      await axios.post("http://localhost:3002/api/addItem", formData);
       toggleModalAdd(); // Close the modal after successful submission
       window.location.reload();
     } catch (error) {
