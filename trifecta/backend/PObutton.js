@@ -16,18 +16,54 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-app.get("/api/addPO", async (req, res) => {
+// Function to create tables if they don't exist
+const createTables = async () => {
+  try {
+    await db.none(`
+      CREATE TABLE IF NOT EXISTS suppliers (
+        supplier_id SERIAL PRIMARY KEY,
+        suppliername VARCHAR(255) NOT NULL,
+        suppliercontact VARCHAR(255) NOT NULL,
+        companyemail VARCHAR(255) UNIQUE NOT NULL,
+        street VARCHAR(255) NOT NULL,
+        city VARCHAR(100) NOT NULL,
+        state VARCHAR(100) NOT NULL,
+        zipcode VARCHAR(20) NOT NULL,
+        country VARCHAR(100) NOT NULL
+      );
+
+      CREATE TABLE IF NOT EXISTS purchase_orders (
+        order_id SERIAL PRIMARY KEY,
+        supplier_id INT NOT NULL REFERENCES suppliers(supplier_id) ON DELETE CASCADE,
+        item_name VARCHAR(255) NOT NULL,
+        quantity INT NOT NULL CHECK (quantity > 0),
+        item_description TEXT
+      );
+    `);
+    console.log("Tables checked/created successfully.");
+  } catch (error) {
+    console.error("Error creating tables:", error);
+  }
+};
+
+// Create tables before starting the server
+createTables();
+
+app.post("/api/addPO", async (req, res) => {
   try {
     const { supplierInfo, items } = req.body;
 
+    if (!supplierInfo || !items || !Array.isArray(items)) {
+      return res.status(400).json({ error: "Invalid request data" });
+    }
+
     // Insert supplier information
     const supplierResult = await db.one(
-      `INSERT INTO suppliers (suppliername, suppliercontact, contactphone, companyemail, street, city, state, zipcode, country) 
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING supplier_id`,
+      `INSERT INTO suppliers (suppliername, suppliercontact, companyemail, street, city, state, zipcode, country) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING supplier_id`,
       [
         supplierInfo.suppliername,
         supplierInfo.suppliercontact,
-        supplierInfo.contactphone,
         supplierInfo.companyemail,
         supplierInfo.street,
         supplierInfo.city,
@@ -58,23 +94,3 @@ app.get("/api/addPO", async (req, res) => {
 app.listen(3006, () => {
   console.log("Server is running on port 3006");
 });
-
-const handleSubmit = async (e) => {
-    if (e) e.preventDefault();
-  
-    try {
-      await axios.post("http://localhost:3006/api/addPO", {
-        supplierInfo,
-        items,
-      });
-      window.location.reload();
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-  
-  const handleSubmitClose = (e) => {
-    handleSubmit(e);
-    toggleForm();
-  };
-  
