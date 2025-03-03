@@ -16,8 +16,8 @@ const logisticsDb = pgp({
   user: "postgres",
   port: 5432,
   // password: 'password2023',
-  password: "password123",
-  database: "postgres",
+  password: "EironJF121701",
+  database: "trifecta_server",
 });
 
 // Middleware

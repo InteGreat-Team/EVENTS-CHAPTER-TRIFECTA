@@ -11,8 +11,8 @@ const inventoryDb = pgp({
   host: "localhost",
   user: "postgres",
   port: 5432,
-  password: "password123",
-  database: "postgres",
+  password: "EironJF121701",
+  database: "trifecta_inventory",
 });
 
 // Middleware

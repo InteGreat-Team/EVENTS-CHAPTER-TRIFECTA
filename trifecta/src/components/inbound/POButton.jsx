@@ -35,13 +35,6 @@ const POButton = () => {
     }
   };
 
-  //  const [supplierInfo, setSupplierInfo] = useState({
-  //    id: '',
-  //    name: '',
-  //    contact: '',
-  //    email: '',
-  //    address: ''
-  //  });
   const [supplierInfo, setSupplierInfo] = useState({
     suppliername: "",
     suppliercontact: "",
@@ -58,7 +51,7 @@ const POButton = () => {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:3003/api/addPO", {
+      await axios.post("http://localhost:3006/api/addPO", {
         supplierInfo,
         items,
       });
@@ -68,29 +61,21 @@ const POButton = () => {
     }
   };
 
-  const handleSubmitClose = () => {
-    handleSubmit();
-    toggleForm();
+  const handleSubmitClose = async (e) => {
+    if (e) e.preventDefault(); // Check if event exists before calling preventDefault()
+  
+    try {
+      await axios.post("http://localhost:3006/api/addPO", {
+        supplierInfo,
+        items,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
-
-  //   const handleSubmit = async (e) => {
-  //     e.preventDefault();
-  //     try {
-  //         const currentDate = new Date();
-  //         const id = `${currentDate.getFullYear()}${(currentDate.getMonth() + 1).toString().padStart(2, '0')}${currentDate.getDate().toString().padStart(2, '0')}${currentDate.getHours().toString().padStart(2, '0')}${currentDate.getMinutes().toString().padStart(2, '0')}${currentDate.getSeconds().toString().padStart(2, '0')}`;
-
-  //         // Add ID to supplierInfo
-  //         const supplierWithId = { ...supplierInfo, id };
-
-  //         console.log(supplierWithId);
-  //         console.log(items);
-
-  //         await axios.post('http://localhost:3001/api/addSupplier', { supplierInfo: supplierWithId, items });
-  //         window.location.reload();
-  //     } catch (error) {
-  //         console.error('Error submitting form:', error);
-  //     }
-  // };
+  
+  
 
   const handleSupplierInfoChange = (field, value) => {
     setSupplierInfo((prevInfo) => ({
@@ -437,12 +422,8 @@ const POButton = () => {
                     >
                       Previous
                     </button>
-                    <button
-                      className="bg-brand-blue text-white mt-10 py-2 px-10 rounded hover:bg-blue-700"
-                      onClick={handleSubmitClose}
-                    >
-                      Submit
-                    </button>
+                    <button className = "bg-brand-blue text-white mt-10 py-2 px-10 rounded hover:bg-blue-700" onClick={(e) => handleSubmitClose(e)}>Submit</button>
+
                   </div>
                 </div>
               )}

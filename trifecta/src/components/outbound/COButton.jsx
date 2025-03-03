@@ -9,14 +9,26 @@ import axios from "axios";
 const COButton = () => {
   const [showForm, setShowForm] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
+  const [modalClosed, setModalClosed] = useState(false);
   const [items, setItems] = useState([
     { itemName: "", quantity: "", itemDescription: "" },
   ]);
 
+  const [customerInfo, setCustomerInfo] = useState({
+    id: "",
+    name: "",
+    contact: "",
+    email: "",
+    address: "",
+    city: "",
+    state: "",
+    country: "",
+    zip: "",
+  });
+
   const handleItemChange = (e, index, field) => {
-    const newItems = items.map((item, i) =>
-      i === index ? { ...item, [field]: e.target.value } : item
-    );
+    const newItems = [...items];
+    newItems[index][field] = e.target.value;
     setItems(newItems);
   };
 
@@ -32,25 +44,6 @@ const COButton = () => {
     }
   };
 
-  const [customerInfo, setCustomerInfo] = useState({
-    id: "",
-    name: "",
-    contact: "",
-    email: "",
-    address: "",
-  });
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    /* try {
-          
-          await axios.post('http://localhost:3003/api/addCO', { customerInfo, items })
-          window.location.reload()
-        } catch (error) {
-          console.error('Error submitting form:', error)
-        } */
-  };
-
   const handleCustomerInfoChange = (field, value) => {
     setCustomerInfo((prevInfo) => ({
       ...prevInfo,
@@ -59,20 +52,35 @@ const COButton = () => {
   };
 
   const handleNext = () => {
-    setCurrentStep(currentStep + 1);
+    setCurrentStep((prev) => prev + 1);
   };
 
   const handlePrevious = () => {
     if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
+      setCurrentStep((prev) => prev - 1);
     }
   };
 
-  const handleSubmitClose = () => {
-    handleSubmit();
+  const handleSubmit = async (e) => {
+    if (e) e.preventDefault();
+
+    try {
+      await axios.post("http://localhost:3005/api/addCO", {
+        customerInfo,
+        items,
+      });
+      window.location.reload();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
+  const handleSubmitClose = async (e) => {
+    if (e) e.preventDefault();
+    await handleSubmit(e);
     toggleForm();
   };
-  const [modalClosed, setModalClosed] = useState(false);
+
 
   return (
     <div className="flex justify-center">
@@ -408,13 +416,17 @@ const COButton = () => {
                     >
                       Previous
                     </button>
-                    <button
-                      className="bg-brand-blue text-white mt-10 py-2 px-10 rounded hover:bg-blue-700"
-                      onClick={handleSubmitClose}
-                      type="submit"
-                    >
-                      Submit
-                    </button>
+                    {/* <button
+  className="bg-brand-blue text-white mt-10 py-2 px-10 rounded hover:bg-blue-700"
+  onClick={(e) => handleSubmitClose(e)} // ✅ Now 'e' is passed correctly
+  type="submit"
+>
+  Submit
+</button> */}
+
+<button className="bg-brand-blue text-white mt-10 py-2 px-10 rounded hover:bg-blue-700" onClick={(e) => handleSubmit(e)}>Submit</button>
+
+
                   </div>
                 </div>
               )}

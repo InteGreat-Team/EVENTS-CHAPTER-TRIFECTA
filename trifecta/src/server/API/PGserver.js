@@ -14,9 +14,9 @@ const db = pgp({
   host: "localhost",
   user: "postgres",
   port: 5432,
-  password: "password123",
+  password: "EironJF121701",
   // password: 'database',
-  database: "postgres",
+  database: "trifecta_PG",
 });
 
 // Middleware
