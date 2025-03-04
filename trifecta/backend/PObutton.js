@@ -40,7 +40,7 @@ const createTables = async () => {
         item_description TEXT
       );
     `);
-    console.log("Tables checked/created successfully.");
+    console.log("✅Tables ensured.");
   } catch (error) {
     console.error("Error creating tables:", error);
   }
@@ -92,5 +92,5 @@ app.post("/api/addPO", async (req, res) => {
 });
 
 app.listen(3006, () => {
-  console.log("Server is running on port 3006");
+  console.log("🔥Server is running on port 3006");
 });
