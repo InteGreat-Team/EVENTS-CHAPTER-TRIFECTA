@@ -521,12 +521,20 @@ db.connect()
       try {
         // Example query to fetch data from a PostgreSQL table
         const data = await db.any(
+          
+
           `SELECT DISTINCT ON (purchaseno) *
           FROM purchaserequest
-          WHERE purchaseno NOT IN (
-            SELECT purchaseordernum FROM purchaseorder
-          ) AND status IN ($1, $2, $3)`,
+          WHERE status IN ($1, $2, $3)`,
           ["Approved", "Pending", "Rejected"]
+
+
+          // `SELECT DISTINCT ON (purchaseno) *
+          // FROM purchaserequest
+          // WHERE purchaseno IN (
+          //   SELECT purchaseordernum FROM purchaseorder
+          // ) AND status IN ($1, $2, $3)`,
+          // ["Approved", "Pending", "Rejected"]
         );
         res.json(data);
       } catch (error) {
@@ -535,17 +543,7 @@ db.connect()
       }
     });
 
-    app.get("/api/dataPurchaseOrder", async (req, res) => {
-      try {
-        const data = await db.any(
-          "SELECT DISTINCT ON (purchaseordernum) * FROM purchaseorder"
-        );
-        res.json(data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-        res.status(500).json({ error: "Internal Server Error" });
-      }
-    });
+    
 
     app.get("/api/itemsPO/:purchaseordernum", async (req, res) => {
       try {

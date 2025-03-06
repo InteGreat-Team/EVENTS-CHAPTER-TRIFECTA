@@ -6,6 +6,8 @@ import { IoAddCircle } from 'react-icons/io5'
 import CloseBtn from '../Buttons/CloseBtn'
 import DatePicker from 'react-datepicker'
 import 'react-datepicker/dist/react-datepicker.css'
+import { useEffect} from 'react'
+
 import axios from 'axios'
 
 function PurchaseRequest({ closeModal, rowData }) {
@@ -18,6 +20,23 @@ function PurchaseRequest({ closeModal, rowData }) {
 	const [showPopup, setShowPopup] = useState(false)
 	const { suppliername, companyemail } = rowData
 	const [id, setId] = useState('')
+	const [itemOptions, setItemOptions] = useState([])
+
+	useEffect(() => {
+		axios.get('http://localhost:3001/api/data')
+			.then((response) => {
+				if (Array.isArray(response.data)) {
+					setItemOptions(response.data.map(item => item.itemname))
+				}
+			})
+			.catch((error) => {
+				console.error('Error fetching item names:', error)
+			})
+	}, [])
+	
+
+
+	
 
 	const addNewItemInfo = () => {
 		setItemInfoCount([
@@ -34,6 +53,8 @@ function PurchaseRequest({ closeModal, rowData }) {
 		setIsHovered(false)
 		setTimeout(() => setShowPopup(false), 300) // Delay hiding the popup
 	}
+
+	
 	const [selectedDate, setSelectedDate] = useState(null)
 
 	const handleDateChange = (date) => {
@@ -188,6 +209,8 @@ function PurchaseRequest({ closeModal, rowData }) {
 		}
 	}
 
+	
+
 	return (
 		<div className="fixed inset-0 flex items-center justify-center z-50 shadow bg-[#00000080] p-2 ">
 			<ToastContainer />
@@ -206,6 +229,7 @@ function PurchaseRequest({ closeModal, rowData }) {
 							>
 								{v}
 							</div>
+							
 
 							{i !== formArray.length - 1 && (
 								<div
@@ -265,93 +289,100 @@ function PurchaseRequest({ closeModal, rowData }) {
 					</div>
 				)}
 				{formNo === 2 && (
-					<div className=" max-h-[500px] overflow-y-scroll no-scrollbar">
-						<div className="flex flex-col mb-2">
-							<h1 className="self-center font-bold text-lg">
-								Order Info
-							</h1>
-							<div className="flex items-center justify-end  mt-4">
-								<div
-									className="relative"
-									onMouseEnter={handleMouseEnter}
-									onMouseLeave={handleMouseLeave}
-								>
-									<IoAddCircle
-										className="text-purple-light text-2xl cursor-pointer"
-										onClick={addNewItemInfo}
-									/>
-									{isHovered && (
-										<div className="absolute top-0 right-full ml-2 mt-2 text-white bg-dark-blue px-2 py-1 text-[11px] rounded-tr-lg whitespace-nowrap ">
-											Add New Item
-										</div>
-									)}
-								</div>
-							</div>
+	<div className="max-h-[500px] overflow-y-scroll no-scrollbar">
+		<div className="flex flex-col mb-2">
+			<h1 className="self-center font-bold text-lg">Order Info</h1>
+			<div className="flex items-center justify-end mt-4">
+				<div
+					className="relative"
+					onMouseEnter={handleMouseEnter}
+					onMouseLeave={handleMouseLeave}
+				>
+					<IoAddCircle
+						className="text-purple-light text-2xl cursor-pointer"
+						onClick={addNewItemInfo}
+					/>
+					{isHovered && (
+						<div className="absolute top-0 right-full ml-2 mt-2 text-white bg-dark-blue px-2 py-1 text-[11px] rounded-tr-lg whitespace-nowrap">
+							Add New Item
+						</div>
+					)}
+				</div>
+			</div>
 
-							{itemInfoCount.map((item, index) => (
-								<div
-									key={index}
-									className="flex flex-col mb-2"
-								>
-									<InputField
-										type="Item"
-										value={item.item}
-										onChange={(e) =>
-											handleItemChange(
-												index,
-												'item',
-												e.target.value
-											)
-										}
-									/>
-									<div className="grid grid-cols-3 w-[100%] gap-x-4">
-										<div className="">
-											<InputField
-												type="Quantity"
-												value={item.quantity}
-												onChange={(e) =>
-													handleItemChange(
-														index,
-														'quantity',
-														e.target.value
-													)
-												}
-												className=" border border-blue-500"
-											/>
-										</div>
-										<div className="col-span-2 ">
-											<InputField
-												type="ItemDescription"
-												value={item.itemDescription}
-												onChange={(e) =>
-													handleItemChange(
-														index,
-														'itemDescription',
-														e.target.value
-													)
-												}
-											/>
-										</div>
-									</div>
-								</div>
-							))}
-							<div className="mt-4 gap-3 flex justify-center items-center">
-								<button
-									onClick={pre}
-									className="px-3 py-2 text-base rounded-md w-full text-white bg-purple"
-								>
-									Previous
-								</button>
-								<button
-									onClick={finalSubmit}
-									className="px-3 py-2 text-base rounded-md w-full text-white bg-green"
-								>
-									Submit
-								</button>
-							</div>
+		<h className="block text-[12px] font-bold my-[0.4rem] lg:mb-[0.2rem] lg:text-base">Select An Item</h>
+		
+
+			{itemInfoCount.map((item, index) => (
+				<div key={index} className="flex flex-col mb-2">
+					{/* Replace InputField with Dropdown for Item Selection */}
+					<select
+						value={item.item}
+						onChange={(e) =>
+							handleItemChange(index, 'item', e.target.value)
+						}
+						className="border border-gray-400 rounded py-1 pl-2 w-full"
+					>
+						<option value="">Select an item</option>
+						{itemOptions.map((option, idx) => (
+							<option key={idx} value={option}>
+								{option}
+							</option>
+						))}
+					</select>
+
+				
+
+
+					<div className="grid grid-cols-3 w-[100%] gap-x-4">
+						<div className="">
+							<InputField
+								type="Quantity"
+								value={item.quantity}
+								onChange={(e) =>
+									handleItemChange(
+										index,
+										'quantity',
+										e.target.value
+									)
+								}
+								className="border border-blue-500"
+							/>
+						</div>
+						<div className="col-span-2">
+							<InputField
+								type="ItemDescription"
+								value={item.itemDescription}
+								onChange={(e) =>
+									handleItemChange(
+										index,
+										'itemDescription',
+										e.target.value
+									)
+								}
+							/>
 						</div>
 					</div>
-				)}
+				</div>
+			))}
+			<div className="mt-4 gap-3 flex justify-center items-center">
+				<button
+					onClick={pre}
+					className="px-3 py-2 text-base rounded-md w-full text-white bg-purple"
+				>
+					Previous
+				</button>
+				<button
+					onClick={finalSubmit}
+					className="px-3 py-2 text-base rounded-md w-full text-white bg-green"
+				>
+					Submit
+				</button>
+			</div>
+		</div>
+	</div>
+)}
+
 			</div>
 		</div>
 	)
