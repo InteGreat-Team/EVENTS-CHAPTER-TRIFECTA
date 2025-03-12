@@ -20,7 +20,7 @@ const InboundTbl = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://localhost:3006/api/addPO"); // Adjust the URL to your API endpoint
+        const response = await axios.get("http://localhost:3002/api/purchaseOrders"); // Adjust the URL to your API endpoint
         setData(response.data);
         console.log(response.data); // Log the response data directly after setting state
       } catch (error) {

@@ -390,6 +390,17 @@ db.connect()
       }
     });
 
+    app.get("/api/purchaseOrders", async (req, res) => {
+      try {
+        // Query to fetch all data from the purchaseorder table
+        const data = await db.any("SELECT * FROM purchaseorder");
+        res.json(data);
+      } catch (error) {
+        console.error("Error fetching purchase orders:", error);
+        res.status(500).json({ error: "Internal Server Error" });
+      }
+    });
+
     const transporter = nodemailer.createTransport({
       service: "gmail", // Use the correct service name
       host: "smtp.gmail.com",

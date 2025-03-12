@@ -14,7 +14,7 @@ const Modal = ({ showSeeMore, toggleSeeMore, selectedItem }) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:3003/api/datasupplier",
+          "http://localhost:3002/api/datasupplier",
           {
             params: {
               suppliername: dataRow.suppliername,

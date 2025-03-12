@@ -22,7 +22,7 @@ const PO = () => {
 		const fetchData = async () => {
 			try {
 				const response = await axios.get(
-					'http://localhost:3002/api/dataPurchaseOrder'
+					'http://localhost:3002/api/purchaseOrders'
 				)
 				// Map the response data to extract only required fields
 				const mappedData = response.data.map((data) => ({
